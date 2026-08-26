@@ -3,19 +3,19 @@ import { crypto } from "@std/crypto";
 import { encodeHex } from "@std/encoding/hex";
 import { exists } from "@std/fs/exists";
 import { contentType, type KnownExtensionOrType as Ext } from "@std/media-types/content-type";
-import { extname, join, relative } from "@std/path";
+import { extname, join, relative, resolve } from "@std/path";
 import { compileScss } from "@xernisfy/grass-wasm";
 
 type Handler = (req: Request, path: string) => Response | Promise<Response>;
 type Routes = [URLPattern, Handler][];
 
-const { _: args, minify, port } = parseArgs(Deno.args, {
+const { _: wild, minify, port } = parseArgs(Deno.args, {
   boolean: ["minify"],
   string: ["port"],
   default: { minify: true, port: "0" },
   alias: { port: "p" },
 });
-const dir = args[0] ? args[0].toString() : ".";
+const dir = resolve(wild[0] as string ?? "");
 const faviconExtensions = ["ico", "png", "gif", "webp", "svg"];
 
 function contentTypeHeader(extensionOrType: Ext) {
