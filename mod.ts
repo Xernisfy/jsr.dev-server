@@ -18,7 +18,6 @@ const { _: wild, minify, port } = parseArgs(Deno.args, {
   alias: { port: "p" },
 });
 const dir = resolve(wild[0] as string ?? ".");
-console.log("dir", dir);
 const faviconExtensions = ["ico", "png", "gif", "webp", "svg"];
 
 function contentTypeHeader(extensionOrType: Ext) {
@@ -37,7 +36,6 @@ function addRoute(pathname: string, handler: Handler) {
 }
 addRoute("/*\\.ts", async (req: Request, path: string) => {
   const modulePath = `file:///${path}?${await hashFile(path)}`;
-  console.log("modulePath", modulePath);
   const module = await import(modulePath);
   const returnValue = await module.default(req);
   return returnValue instanceof Response ? returnValue : new Response(returnValue);
@@ -54,7 +52,6 @@ addRoute("/*\\.s(a|c)ss", async (_req: Request, path: string) => {
 async function handleRequest(req: Request) {
   const url = new URL(req.url);
   const path = join(dir, decodeURIComponent(url.pathname));
-  console.log("path", path);
   for (const [pattern, handler] of routes) {
     if (pattern.test(url)) return await handler(req, path);
   }
