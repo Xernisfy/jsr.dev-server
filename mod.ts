@@ -6,6 +6,9 @@ import { contentType, type KnownExtensionOrType as Ext } from "@std/media-types/
 import { extname, join, relative } from "@std/path";
 import { compileScss } from "@xernisfy/grass-wasm";
 
+type Handler = (req: Request, path: string) => Response | Promise<Response>;
+type Routes = [URLPattern, Handler][];
+
 const { _: args, minify, port } = parseArgs(Deno.args, {
   boolean: ["minify"],
   string: ["port"],
