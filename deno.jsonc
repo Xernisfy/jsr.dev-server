@@ -1,0 +1,23 @@
+{
+  "exports": "./mod.ts",
+  "fmt": {
+    "lineWidth": 140
+  },
+  "imports": {
+    "@std/cli": "jsr:@std/cli@^1.0.32",
+    "@std/crypto": "jsr:@std/crypto@^1.1.0",
+    "@std/encoding": "jsr:@std/encoding@^1.0.11",
+    "@std/fs": "jsr:@std/fs@^1.0.24",
+    "@std/media-types": "jsr:@std/media-types@^1.1.0",
+    "@std/path": "jsr:@std/path@^1.1.6",
+    "@xernisfy/grass-wasm": "jsr:@xernisfy/grass-wasm@^0.1.3"
+  },
+  "name": "@xernisfy/dev-server",
+  "permissions": {
+    "default": {
+      "net": ["0.0.0.0"],
+      "read": true
+    }
+  },
+  "version": "0.0.1"
+}
