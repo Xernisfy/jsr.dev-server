@@ -33,7 +33,7 @@ function addRoute(pathname: string, handler: Handler) {
   routes.push([new URLPattern({ pathname }), handler]);
 }
 addRoute("/*\\.ts", async (req: Request, path: string) => {
-  const module = await import(`./${relative(Deno.cwd(), path)}?${await hashFile(path)}`);
+  const module = await import(`./${relative(dir, path)}?${await hashFile(path)}`);
   const returnValue = await module.default(req);
   return returnValue instanceof Response ? returnValue : new Response(returnValue);
 });
@@ -48,7 +48,7 @@ addRoute("/*\\.s(a|c)ss", async (_req: Request, path: string) => {
 
 async function handleRequest(req: Request) {
   const url = new URL(req.url);
-  const path = decodeURIComponent(join(Deno.cwd(), dir, url.pathname));
+  const path = decodeURIComponent(join(dir, url.pathname));
   for (const [pattern, handler] of routes) {
     if (pattern.test(url)) return await handler(req, path);
   }
@@ -56,7 +56,7 @@ async function handleRequest(req: Request) {
   let testPath;
   if (url.pathname === "/favicon.ico") {
     for (const ext of faviconExtensions) {
-      testPath = join(Deno.cwd(), dir, "favicon." + ext);
+      testPath = join(dir, "favicon." + ext);
       if (await exists(testPath, { isFile: true })) return serveFile(testPath);
     }
     return new Response(
