@@ -36,7 +36,7 @@ function addRoute(pathname: string, handler: Handler) {
   routes.push([new URLPattern({ pathname }), handler]);
 }
 addRoute("/*\\.ts", async (req: Request, path: string) => {
-  const module = await import(`file://${path}?${await hashFile(path)}`);
+  const module = await import(`file:///${path}?${await hashFile(path)}`);
   const returnValue = await module.default(req);
   return returnValue instanceof Response ? returnValue : new Response(returnValue);
 });
