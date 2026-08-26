@@ -3,7 +3,7 @@ import { crypto } from "@std/crypto";
 import { encodeHex } from "@std/encoding/hex";
 import { exists } from "@std/fs/exists";
 import { contentType, type KnownExtensionOrType as Ext } from "@std/media-types/content-type";
-import { extname, join, relative, resolve } from "@std/path";
+import { extname, join, resolve } from "@std/path";
 import { compileScss } from "@xernisfy/grass-wasm";
 
 type Handler = (req: Request, path: string) => Response | Promise<Response>;
@@ -15,7 +15,8 @@ const { _: wild, minify, port } = parseArgs(Deno.args, {
   default: { minify: true, port: "0" },
   alias: { port: "p" },
 });
-const dir = resolve(wild[0] as string ?? "");
+const dir = resolve(wild[0] as string ?? ".");
+console.log("dir", dir);
 const faviconExtensions = ["ico", "png", "gif", "webp", "svg"];
 
 function contentTypeHeader(extensionOrType: Ext) {
@@ -33,7 +34,7 @@ function addRoute(pathname: string, handler: Handler) {
   routes.push([new URLPattern({ pathname }), handler]);
 }
 addRoute("/*\\.ts", async (req: Request, path: string) => {
-  const module = await import(`./${relative(dir, path)}?${await hashFile(path)}`);
+  const module = await import(`./${path}?${await hashFile(path)}`);
   const returnValue = await module.default(req);
   return returnValue instanceof Response ? returnValue : new Response(returnValue);
 });
@@ -48,7 +49,8 @@ addRoute("/*\\.s(a|c)ss", async (_req: Request, path: string) => {
 
 async function handleRequest(req: Request) {
   const url = new URL(req.url);
-  const path = decodeURIComponent(join(dir, url.pathname));
+  const path = join(dir, decodeURIComponent(url.pathname));
+  console.log("path", path);
   for (const [pattern, handler] of routes) {
     if (pattern.test(url)) return await handler(req, path);
   }
