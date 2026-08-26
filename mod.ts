@@ -3,7 +3,9 @@ import { crypto } from "@std/crypto";
 import { encodeHex } from "@std/encoding/hex";
 import { exists } from "@std/fs/exists";
 import { contentType, type KnownExtensionOrType as Ext } from "@std/media-types/content-type";
-import { extname, join, resolve } from "@std/path";
+import { extname } from "@std/path/extname";
+import { join } from "@std/path/join";
+import { resolve } from "@std/path/resolve";
 import { compileScss } from "@xernisfy/grass-wasm";
 
 type Handler = (req: Request, path: string) => Response | Promise<Response>;
@@ -34,7 +36,7 @@ function addRoute(pathname: string, handler: Handler) {
   routes.push([new URLPattern({ pathname }), handler]);
 }
 addRoute("/*\\.ts", async (req: Request, path: string) => {
-  const module = await import(`./${path}?${await hashFile(path)}`);
+  const module = await import(`file://${path}?${await hashFile(path)}`);
   const returnValue = await module.default(req);
   return returnValue instanceof Response ? returnValue : new Response(returnValue);
 });
