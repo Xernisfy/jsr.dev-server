@@ -12,6 +12,7 @@
     "@std/path": "jsr:@std/path@^1.1.6",
     "@xernisfy/grass-wasm": "jsr:@xernisfy/grass-wasm@^0.1.3"
   },
+  "license": "MIT",
   "name": "@xernisfy/dev-server",
   "permissions": {
     "default": {

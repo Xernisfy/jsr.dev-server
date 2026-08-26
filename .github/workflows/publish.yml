@@ -1,25 +1,19 @@
 name: Publish
-
 on:
   push:
-    branches: ["main"]
-
-permissions:
-  contents: read
-  id-token: write
+    branches:
+      - main
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - name: Setup repo
-        uses: actions/checkout@v7
-
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
+      - uses: actions/checkout@v7
+      - uses: denoland/setup-deno@v2
         with:
           deno-version: latest
-
       - name: Publish package
         run: deno publish
